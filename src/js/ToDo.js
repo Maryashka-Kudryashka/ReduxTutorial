@@ -2,6 +2,7 @@ import {createStore} from "redux"
 import expect from "expect"
 import React from "react"
 import ReactDOM from "react-dom"
+import { combineReducers } from "redux"
 
 const todo = (state, action) => {
   switch (action.type) {
@@ -51,19 +52,10 @@ const visibilityFilter = (
   }
 }
 
-const todoApp = (state = {}, action) => {
-  return {
-    todos: todos(
-      state.todos,
-      action
-    ),
-    visibilityFilter: visibilityFilter(
-      state.visibilityFilter,
-      action
-    )
-  };
-};
-
+const todoApp = combineReducers({
+  todos: todos,
+  visibilityFilter: visibilityFilter
+});
 
 const store = createStore(todoApp);
 
@@ -112,67 +104,3 @@ store.dispatch({
 console.log('Current state:');
 console.log(store.getState());
 console.log('---------------');
-// const testAddTodo = () => {
-//   const stateBefore = [];
-//   const action = {
-//     type: 'ADD_TODO',
-//     id: 0,
-//     text:'Learn Redux'
-//   };
-//   const stateAfter = [
-//     {
-//       id: 0,
-//       text:'Learn Redux',
-//       completed: false
-//     }
-//   ];
-//
-//   deepFreeze(stateBefore);
-//   deepFreeze(action);
-//
-//   expect (
-//     todos(stateBefore, action)
-//   ).toEqual(stateAfter);
-// }
-//
-// const testToggleTodo = () => {
-//   const stateBefore = [
-//     {
-//       id: 0,
-//       text: 'Learn Redux',
-//       completed: false
-//     },
-//     {
-//       id: 1,
-//       text: 'Go shopping',
-//       completed: false
-//     }
-//   ];
-//   const action = {
-//     type: 'TOGGLE_TODO',
-//     id: 1
-//   };
-//   const stateAfter = [
-//     {
-//       id: 0,
-//       text: 'Learn Redux',
-//       completed: false
-//     },
-//     {
-//       id: 1,
-//       text: 'Go shopping',
-//       completed: true
-//     }
-//   ];
-//
-//   deepFreeze(stateBefore);
-//   deepFreeze(action);
-//
-//   expect (
-//     todos(stateBefore, action)
-//   ).toEqual(stateAfter);
-// }
-//
-// testAddTodo();
-// testToggleTodo();
-// console.log('All tests passed.')
