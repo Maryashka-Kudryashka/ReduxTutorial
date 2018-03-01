@@ -2,7 +2,7 @@ import {createStore} from "redux"
 import expect from "expect"
 import React from "react"
 import ReactDOM from "react-dom"
-import { combineReducers } from "redux"
+// import { combineReducers } from "redux"
 
 const todo = (state, action) => {
   switch (action.type) {
@@ -51,6 +51,21 @@ const visibilityFilter = (
       return state;
   }
 }
+
+const combineReducers = (reducers) => {
+  return (state = {}, action) => {
+    return Object.keys(reducers).reduce (
+      (nextState, key) => {
+        nextState[key] = reducers[key] (
+          state[key],
+          action
+        );
+        return nextState;
+      },
+      {}
+    );
+  };
+};
 
 const todoApp = combineReducers({
   todos: todos,
