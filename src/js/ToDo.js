@@ -171,9 +171,7 @@ const TodoList = ({
   </ul>
 );
 
-const AddTodo = ({
-  onAddClick
-}) => {
+const AddTodo = () => {
   let input;
   return (
     <div>
@@ -181,7 +179,11 @@ const AddTodo = ({
         input = node;
       }} />
       <button onClick={() => {
-        onAddClick(input.value);
+        store.dispatch({
+          type:'ADD_TODO',
+          id: nextTodoId++,
+          text: input.value
+        })
         input.value = '';
       }}>
       Add todo
@@ -209,51 +211,53 @@ const getVisibleTodos = (
   }
 }
 
+class VisibleTodoList extends React.Component {
+  componentDidMount() {
+    this.unsubscribe = store.subscribe(() =>
+      this.forceUpdate()
+    );
+  }
 
-let nextTodoId = 0;
-const TodoApp = ({
-  todos,
-  visibilityFilter
-}) => (
-      <div>
-        <AddTodo
-          onAddClick={text =>
+  componentWillUnmont() {
+    this.unsubscribe();
+  }
+  render() {
+    const props = this.props;
+    const state = store.getState();
+
+    return (
+      <TodoList
+        todos={
+          getVisibleTodos(
+            state.todos,
+            state.visibilityFilter
+          )
+        }
+        onTodoClick={id =>
           store.dispatch({
-            type:'ADD_TODO',
-            id: nextTodoId++,
-            text
+            type: 'TOGGLE_TODO',
+            id
           })
         }
         />
-        <TodoList
-          todos={
-            getVisibleTodos(
-            todos,
-            visibilityFilter
-          )
-        }
-          onTodoClick={id =>
-            store.dispatch({
-              type: 'TOGGLE_TODO',
-              id
-            })
-          }
-        />
-        <Footer
+    );
+  }
+}
 
-          />
+let nextTodoId = 0;
+const TodoApp = () => (
+      <div>
+        <AddTodo/>
+        <VisibleTodoList/>
+        <Footer/>
         </div>
     );
 
+ReactDOM.render (
+  <TodoApp/>,
+  document.getElementById('root')
+ )
 
-const render = () => {
-  ReactDOM.render (
-    <TodoApp
-    {...store.getState()}
-    />,
-    document.getElementById('root')
-   )
-}
 
 store.subscribe(render);
 render();
