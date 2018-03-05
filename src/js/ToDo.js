@@ -6,6 +6,7 @@ import { combineReducers } from "redux"
 import { component } from "react";
 import PropTypes from "prop-types"
 import { Provider } from "react-redux"
+import { connect } from "react-redux"
 
 const todo = (state, action) => {
   switch (action.type) {
@@ -222,40 +223,31 @@ const getVisibleTodos = (
   }
 }
 
-class VisibleTodoList extends React.Component {
-  componentDidMount() {
-    const { store } = this.context;
-    this.unsubscribe = store.subscribe(() =>
-      this.forceUpdate()
-    );
-  }
+const mapStateToProps = (state) => {
+  return {
+    todos: getVisibleTodos(
+      state.todos,
+      state.visibilityFilter
+    )
+  };
+};
 
-  componentWillUnmont() {
-    this.unsubscribe();
-  }
-  render() {
-    const props = this.props;
-    const { store } = this.context;
-    const state = store.getState();
+const mapDispatchToprops = (dispatch) => {
+  return {
+    onTodoClick: (id) => {
+      dispatch({
+        type: 'TOGGLE_TODO',
+        id
+      })
+    }
+  };
+};
 
-    return (
-      <TodoList
-        todos={
-          getVisibleTodos(
-            state.todos,
-            state.visibilityFilter
-          )
-        }
-        onTodoClick={id =>
-          store.dispatch({
-            type: 'TOGGLE_TODO',
-            id
-          })
-        }
-        />
-    );
-  }
-}
+const VisibleTodoList = connect(
+  mapStateToProps,
+  mapDispatchToprops
+)(TodoList);
+
 
 VisibleTodoList.contextTypes = {
     store: PropTypes.object
