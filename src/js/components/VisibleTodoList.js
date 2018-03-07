@@ -31,17 +31,17 @@ const mapStateToTodoListProps = (
     )
 });
 
-const mapDispatchToTodoListProps = (
-  dispatch
-) => ({
-    onTodoClick: (id) => {
-      dispatch(toggleTodo(id))
-    }
-});
+// const mapDispatchToTodoListProps = (
+//   dispatch
+// ) => ({
+//     onTodoClick: (id) => {
+//       dispatch(toggleTodo(id))
+//     }
+// });
 
 const VisibleTodoList = withRouter(connect(
   mapStateToTodoListProps,
-  mapDispatchToTodoListProps
+  { onTodoClick: toggleTodo }
 )(TodoList));
 
 
