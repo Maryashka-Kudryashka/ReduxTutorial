@@ -1,7 +1,7 @@
 import { v4 } from "node-uuid";
 
 const fakeDatabase = {
-  todps: [{
+  todos: [{
     id: v4(),
     text: 'hey',
     completed: true,
